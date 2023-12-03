@@ -9,9 +9,10 @@ import NavigationLink from "./shared/NavigationLink";
 const Header = () => {
   const auth = useAuth();
   const handleLogout = async () => {
+    console.log("logout handle called");
     await auth?.logout;
     window.location.reload();
-  }
+  };
   return (
     <AppBar
       sx={{ bgcolor: "transparent", position: "static", boxShadow: "none" }}

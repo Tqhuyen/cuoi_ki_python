@@ -47,11 +47,11 @@ def print_message(message):
     
 @socketio.on('auth')
 def authentication(data):
-    db_user = pd.read_csv("username.csv")
+    db_user = pd.read_csv("username.csv", index_col=None)
     print(request.remote_addr)
     if request.remote_addr in db_user["ip"].values:
         print("ok")
-        res = db_user[db_user["ip"] == request.remote_addr][["name","username"]]
+        res = db_user[db_user["ip"] == request.remote_addr]["name","username"]
         username = res["username"].values[0]
         name = res["name"].values[0]
         response = {
@@ -63,6 +63,7 @@ def authentication(data):
         }
         
     else:
+        print("not ok")
         response = {
             "status": 201
         }
@@ -71,13 +72,17 @@ def authentication(data):
         
 @socketio.on('logout')
 def logout(data):
-    db_user = pd.read_csv("username.csv")
+    print("logging out")
+    db_user = pd.read_csv("username.csv", index_col=None)
+    print(db_user.head())
     print(request.remote_addr)
     if request.remote_addr in db_user["ip"].values:
+        print(db_user[db_user["ip"] == request.remote_addr].head())
         res = db_user[db_user["ip"] == request.remote_addr][["name","username"]]
         username = res["username"].values[0]
         name = res["name"].values[0]
-        db_user["ip"].replace(request.remote_addr, 0, inplace=True)
+        db_user["ip"].replace(request.remote_addr, 1, inplace=True)
+        print(db_user.head())
         response = {
             "status": 200,
             "data" : {
@@ -90,12 +95,12 @@ def logout(data):
         response = {
             "status": 201
         }
-    db_user.to_csv("username.csv")
+    db_user.to_csv("username.csv", index=False)
     socketio.emit('logout', response)
         
-@socketio.on('login')
+@socketio.on("login")
 def login(data):
-    db_user = pd.read_csv("username.csv")
+    db_user = pd.read_csv("username.csv", index_col=None)
     request.remote_addr
     if data["username"] in db_user["username"].values:
         print(db_user.loc[db_user["username"] == data["username"], "password"].values[0])
@@ -119,9 +124,11 @@ def login(data):
     socketio.emit("login", response)
     print(data)
     
+    
+    
 @socketio.on("signup")
 def signup(data):
-    db_user = pd.read_csv("username.csv")
+    db_user = pd.read_csv("username.csv", index_col=None)
     print(db_user)
     print(data)
     name = data["name"]

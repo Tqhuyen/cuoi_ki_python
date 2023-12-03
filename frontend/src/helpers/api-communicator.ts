@@ -22,7 +22,6 @@ type ChatRes = {
 
 const socket = io("http://127.0.0.1:6968/")
 export const loginUser = async (email: string, password: string) => {
-  // const res = await axios.post("/user/login", { email, password });
   socket.emit("login", {"username": email, "password": password});
   const res: LoginRes = await new Promise((resolve, reject) => {
     socket.on("login", (response) => {
@@ -60,7 +59,6 @@ export const signupUser = async (
 };
 
 export const checkAuthStatus = async () => {
-  // const res = await axios.get("/user/auth-status");
   socket.emit("auth", "checkthisuser");
   
   const res: LoginRes = await new Promise((resolve, reject) => {
@@ -77,7 +75,6 @@ export const checkAuthStatus = async () => {
 };
 
 export const sendChatRequest = async (message: string) => {
-  // const res = await axios.post("/chat/new", { message });
   socket.emit("chat", {"message": message});
 
   const res: ChatRes = await new Promise((resolve) => {
@@ -114,13 +111,16 @@ export const deleteUserChats = async () => {
 };
 
 export const logoutUser = async () => {
+  console.log("log outttttttttttttttttttt");
   // const res = await axios.get("/user/logout");
   socket.emit("logout", "logout");
+
   const res: ChatRes = await new Promise((resolve) => {
     socket.on("logout", (response) => {
       resolve(response);
     });
   });
+  
   console.log(res)
   if (res.status !== 200) {
     throw new Error("Unable to delete chats");

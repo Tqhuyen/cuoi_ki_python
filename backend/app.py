@@ -51,7 +51,7 @@ def authentication(data):
     print(request.remote_addr)
     if request.remote_addr in db_user["ip"].values:
         print("ok")
-        res = db_user[db_user["ip"] == request.remote_addr]["name","username"]
+        res = db_user[db_user["ip"] == request.remote_addr][["name","username"]]
         username = res["username"].values[0]
         name = res["name"].values[0]
         response = {
@@ -116,6 +116,10 @@ def login(data):
                 }
             }
             print(response)
+        else:
+            response = {
+                "status": 404
+            }
     else:
         response = {
             "status": 404

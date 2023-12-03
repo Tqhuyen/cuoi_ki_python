@@ -10,7 +10,7 @@ const Header = () => {
   const auth = useAuth();
   const handleLogout = async () => {
     console.log("logout handle called");
-    await auth?.logout;
+    await auth?.logout();
     window.location.reload();
   };
   return (
